@@ -32,8 +32,8 @@ module.exports = configure(function (ctx) {
       // 'mdi-v5',
       // 'fontawesome-v6',
       // 'eva-icons',
-      // 'themify',
-      // 'line-awesome',
+      // "themify",
+      "line-awesome",
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
       "roboto-font", // optional, you are not bound to it
