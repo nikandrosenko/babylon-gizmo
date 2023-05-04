@@ -1,5 +1,5 @@
 <template>
-  <canvas ref="bjsCanvas" width="500" height="500" />
+  <canvas ref="bjsCanvas" class="canvas"></canvas>
 </template>
 <script setup lang="ts">
 import { ref, onMounted } from "@vue/runtime-core";
@@ -13,3 +13,10 @@ onMounted(async () => {
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.canvas {
+  width: 100vw;
+  height: 100vh;
+}
+</style>

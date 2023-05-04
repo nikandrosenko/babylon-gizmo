@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex row items-center justify-evenly">
+  <q-page class="flex-center row">
     <babylon-scene />
   </q-page>
 </template>
