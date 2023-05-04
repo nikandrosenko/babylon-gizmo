@@ -10,6 +10,7 @@ import {
   GizmoManager,
   ActionManager,
   SetValueAction,
+  AbstractMesh,
 } from "@babylonjs/core";
 const createScene = (canvas: HTMLCanvasElement) => {
   const engine = new Engine(canvas);
@@ -45,23 +46,28 @@ const createScene = (canvas: HTMLCanvasElement) => {
   sphere.material = sphereMaterial;
   sphere.position.y = 1;
   sphere.actionManager = new ActionManager(scene);
-  sphere.actionManager
-    .registerAction(
-      new SetValueAction(
-        ActionManager.OnLeftPickTrigger,
-        sphere.material,
-        "emissiveColor",
-        Color3.Gray()
+
+  const pickMesh = (mesh: AbstractMesh) => {
+    mesh.actionManager
+      ?.registerAction(
+        new SetValueAction(
+          ActionManager.OnLeftPickTrigger,
+          mesh.material,
+          "emissiveColor",
+          Color3.Gray()
+        )
       )
-    )
-    ?.then(
-      new SetValueAction(
-        ActionManager.OnLeftPickTrigger,
-        sphere.material,
-        "emissiveColor",
-        sphereMaterial.emissiveColor
-      )
-    );
+      ?.then(
+        new SetValueAction(
+          ActionManager.OnLeftPickTrigger,
+          mesh.material,
+          "emissiveColor",
+          sphereMaterial.emissiveColor
+        )
+      );
+  };
+
+  pickMesh(sphere);
 
   gizmoManager.attachableMeshes = [sphere];
 
