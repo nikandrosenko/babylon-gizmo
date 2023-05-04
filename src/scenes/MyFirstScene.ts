@@ -8,6 +8,8 @@ import {
   Color3,
   HemisphericLight,
   GizmoManager,
+  ActionManager,
+  SetValueAction,
 } from "@babylonjs/core";
 const createScene = (canvas: HTMLCanvasElement) => {
   const engine = new Engine(canvas);
@@ -20,23 +22,46 @@ const createScene = (canvas: HTMLCanvasElement) => {
 
   new HemisphericLight("light", Vector3.Up(), scene);
 
-  const material = new StandardMaterial("material", scene);
-  material.diffuseColor = Color3.Gray();
+  const ground = MeshBuilder.CreateGround(
+    "ground",
+    { width: 10, height: 10 },
+    scene
+  );
+  const groundMaterial = new StandardMaterial("ground", scene);
+  groundMaterial.diffuseColor = Color3.Gray();
+  groundMaterial.specularColor = Color3.Black();
+  ground.material = groundMaterial;
+  ground.actionManager = new ActionManager(scene);
 
   const sphere = MeshBuilder.CreateSphere(
     "sphere",
     { segments: 32, diameter: 2 },
     scene
   );
-  sphere.material = material;
+  const sphereMaterial = new StandardMaterial("ground", scene);
+  sphereMaterial.diffuseColor = new Color3(0.4, 0.4, 0.4);
+  sphereMaterial.specularColor = new Color3(0.4, 0.4, 0.4);
+  sphereMaterial.emissiveColor = Color3.Black();
+  sphere.material = sphereMaterial;
   sphere.position.y = 1;
-
-  const ground = MeshBuilder.CreateGround(
-    "ground",
-    { width: 10, height: 10 },
-    scene
-  );
-  ground.material = material;
+  sphere.actionManager = new ActionManager(scene);
+  sphere.actionManager
+    .registerAction(
+      new SetValueAction(
+        ActionManager.OnLeftPickTrigger,
+        sphere.material,
+        "emissiveColor",
+        Color3.Gray()
+      )
+    )
+    ?.then(
+      new SetValueAction(
+        ActionManager.OnLeftPickTrigger,
+        sphere.material,
+        "emissiveColor",
+        sphereMaterial.emissiveColor
+      )
+    );
 
   gizmoManager.attachableMeshes = [sphere];
 
