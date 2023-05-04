@@ -18,10 +18,23 @@ const createScene = (canvas: HTMLCanvasElement) => {
 
   new HemisphericLight("light", Vector3.Up(), scene);
 
-  const box = MeshBuilder.CreateBox("box", { size: 2 }, scene);
-  const material = new StandardMaterial("box-material", scene);
-  material.diffuseColor = Color3.Blue();
-  box.material = material;
+  const material = new StandardMaterial("material", scene);
+  material.diffuseColor = Color3.Gray();
+
+  const sphere = MeshBuilder.CreateSphere(
+    "sphere",
+    { segments: 32, diameter: 2 },
+    scene
+  );
+  sphere.material = material;
+  sphere.position.y = 1;
+
+  const ground = MeshBuilder.CreateGround(
+    "ground",
+    { width: 10, height: 10 },
+    scene
+  );
+  ground.material = material;
 
   engine.runRenderLoop(() => {
     scene.render();
