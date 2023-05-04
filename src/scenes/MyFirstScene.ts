@@ -7,10 +7,12 @@ import {
   StandardMaterial,
   Color3,
   HemisphericLight,
+  GizmoManager,
 } from "@babylonjs/core";
 const createScene = (canvas: HTMLCanvasElement) => {
   const engine = new Engine(canvas);
   const scene = new Scene(engine);
+  const gizmoManager = new GizmoManager(scene);
 
   const camera = new FreeCamera("camera1", new Vector3(0, 5, -10), scene);
   camera.setTarget(Vector3.Zero());
@@ -35,6 +37,8 @@ const createScene = (canvas: HTMLCanvasElement) => {
     scene
   );
   ground.material = material;
+
+  gizmoManager.attachableMeshes = [sphere];
 
   engine.runRenderLoop(() => {
     scene.render();
