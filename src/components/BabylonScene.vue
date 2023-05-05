@@ -2,14 +2,17 @@
   <canvas ref="bjsCanvas" class="canvas"></canvas>
 </template>
 <script setup lang="ts">
-import { ref, onMounted } from "@vue/runtime-core";
+import { ref, onMounted, watch } from "@vue/runtime-core";
 import { createScene } from "../scenes/MyFirstScene";
+import { MainScene } from "../scenes/MainScene";
+
+const props = defineProps<{ tools: string }>();
 
 const bjsCanvas = ref<HTMLCanvasElement | null>(null);
 
 onMounted(async () => {
   if (bjsCanvas.value) {
-    await createScene(bjsCanvas.value);
+    new MainScene(bjsCanvas.value);
   }
 });
 </script>

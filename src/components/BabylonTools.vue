@@ -1,7 +1,8 @@
 <template>
   <q-btn-toggle
     class="tools"
-    v-model="model"
+    id="toolsId"
+    v-model="toolsModel"
     push
     glossy
     text-color="white"
@@ -12,11 +13,20 @@
       { icon: 'las la-redo-alt', value: 'rotate' },
       { icon: 'las la-expand-arrows-alt', value: 'scale' },
     ]"
+    @update:model-value="toolsEmit"
   />
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
-const model = ref("one");
+import { ref, onMounted, watch } from "vue";
+const toolsModel = ref("cursor");
+
+const emit = defineEmits<{
+  (e: "tool", value: string): void;
+}>();
+
+const toolsEmit = () => {
+  emit("tool", toolsModel.value);
+};
 </script>
 
 <style lang="scss" scoped>
