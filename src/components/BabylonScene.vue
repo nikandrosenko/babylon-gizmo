@@ -3,7 +3,6 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted, watch } from "@vue/runtime-core";
-import { createScene } from "../scenes/MyFirstScene";
 import { MainScene } from "../scenes/MainScene";
 
 const props = defineProps<{ tools: string }>();
