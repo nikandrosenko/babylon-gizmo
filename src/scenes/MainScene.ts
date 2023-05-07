@@ -12,6 +12,8 @@ import {
   ActionManager,
   SetValueAction,
   AbstractMesh,
+  CombineAction,
+  PredicateCondition,
   ExecuteCodeAction,
   UtilityLayerRenderer,
   PositionGizmo,
@@ -21,16 +23,20 @@ import {
 export class MainScene {
   scene: Scene;
   engine: Engine;
+  camera!: FreeCamera;
   ground!: AbstractMesh;
   sphere!: AbstractMesh;
-  camera!: FreeCamera;
+  meshPicked!: AbstractMesh;
+  otherMesh!: AbstractMesh;
+  utilLayer: UtilityLayerRenderer;
   gizmo!: Gizmo;
   gizmoManager!: GizmoManager;
 
   constructor(private canvas: HTMLCanvasElement) {
     this.engine = new Engine(this.canvas, true);
     this.scene = this.CreateScene();
-    this.gizmoManager = new GizmoManager(this.scene);
+    this.utilLayer = new UtilityLayerRenderer(this.scene);
+    this.gizmoManager = new GizmoManager(this.scene, 1, this.utilLayer);
 
     this.CreateCamera();
     this.CreateMeshes();
@@ -77,13 +83,56 @@ export class MainScene {
   }
 
   Actions(tool: string): void {
-    this.sphere.actionManager = new ActionManager(this.scene);
+    // const pickedColor = new StandardMaterial("color", this.scene);
+    // pickedColor.emissiveColor = Color3.Gray();
 
-    this.Gizmo(tool, this.gizmoManager, this.sphere);
+    function pickMesh(this: MainScene, mesh: AbstractMesh) {
+      mesh.actionManager = new ActionManager(this.scene);
+      mesh.actionManager
+        ?.registerAction(
+          new CombineAction(ActionManager.OnLeftPickTrigger, [
+            new ExecuteCodeAction(ActionManager.NothingTrigger, () => {
+              console.log("Выбрано:", mesh.name);
+              this.meshPicked = mesh;
+              if (tool) {
+                this.Gizmo(tool, this.gizmoManager, this.meshPicked);
+              }
+            }),
+            new SetValueAction(
+              ActionManager.NothingTrigger,
+              mesh.material,
+              "wireframe",
+              true
+            ),
+          ])
+        )
+        ?.then(
+          new CombineAction(ActionManager.NothingTrigger, [
+            new ExecuteCodeAction(ActionManager.NothingTrigger, () => {
+              console.log("Сброшено:", mesh.name);
+              this.meshPicked = this.otherMesh;
+              this.gizmoManager.scaleGizmoEnabled = false;
+              this.gizmoManager.rotationGizmoEnabled = false;
+              this.gizmoManager.positionGizmoEnabled = false;
+            }),
+            new SetValueAction(
+              ActionManager.NothingTrigger,
+              mesh.material,
+              "wireframe",
+              false
+            ),
+          ])
+        );
+    }
+    pickMesh.call(this, this.sphere);
+    if (this.meshPicked) {
+      this.Gizmo(tool, this.gizmoManager, this.meshPicked);
+    }
   }
 
   Gizmo(tool: string, gizmoManager: any, mesh: AbstractMesh): any {
     gizmoManager.usePointerToAttachGizmos = false;
+
     gizmoManager.attachToMesh(mesh);
     switch (tool) {
       case "cursor":
@@ -100,6 +149,8 @@ export class MainScene {
         gizmoManager.scaleGizmoEnabled = false;
         gizmoManager.positionGizmoEnabled = false;
         gizmoManager.rotationGizmoEnabled = true;
+        gizmoManager.gizmos.rotationGizmo.updateGizmoRotationToMatchAttachedMesh =
+          false;
         break;
       case "scale":
         gizmoManager.positionGizmoEnabled = false;
