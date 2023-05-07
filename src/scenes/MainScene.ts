@@ -151,6 +151,9 @@ export class MainScene {
         gizmoManager.positionGizmoEnabled = false;
         gizmoManager.rotationGizmoEnabled = false;
         gizmoManager.scaleGizmoEnabled = true;
+        gizmoManager.gizmos.scaleGizmo.xGizmo.uniformScaling = true;
+        gizmoManager.gizmos.scaleGizmo.yGizmo.uniformScaling = true;
+        gizmoManager.gizmos.scaleGizmo.zGizmo.uniformScaling = true;
         break;
     }
   }
