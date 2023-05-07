@@ -13,12 +13,8 @@ import {
   SetValueAction,
   AbstractMesh,
   CombineAction,
-  PredicateCondition,
   ExecuteCodeAction,
   UtilityLayerRenderer,
-  PositionGizmo,
-  RotationGizmo,
-  ScaleGizmo,
 } from "@babylonjs/core";
 export class MainScene {
   scene: Scene;
@@ -83,9 +79,6 @@ export class MainScene {
   }
 
   Actions(tool: string): void {
-    // const pickedColor = new StandardMaterial("color", this.scene);
-    // pickedColor.emissiveColor = Color3.Gray();
-
     function pickMesh(this: MainScene, mesh: AbstractMesh) {
       mesh.actionManager = new ActionManager(this.scene);
       mesh.actionManager
@@ -124,7 +117,9 @@ export class MainScene {
           ])
         );
     }
+
     pickMesh.call(this, this.sphere);
+
     if (this.meshPicked) {
       this.Gizmo(tool, this.gizmoManager, this.meshPicked);
     }
