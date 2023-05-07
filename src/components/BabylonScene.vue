@@ -11,7 +11,11 @@ const bjsCanvas = ref<HTMLCanvasElement | null>(null);
 
 onMounted(async () => {
   if (bjsCanvas.value) {
-    new MainScene(bjsCanvas.value);
+    const scene = new MainScene(bjsCanvas.value);
+    scene.Actions(props.tools);
+    watch(props, () => {
+      scene.Actions(props.tools);
+    });
   }
 });
 </script>
